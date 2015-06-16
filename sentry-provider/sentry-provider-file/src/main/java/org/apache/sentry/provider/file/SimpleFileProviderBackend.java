@@ -147,6 +147,9 @@ public class SimpleFileProviderBackend implements ProviderBackend {
     if (!initialized) {
       throw new IllegalStateException("Backend has not been properly initialized");
     }
+    // Now we initialize PolicyEngine only connection session start,
+    // so we may need to reload PolicyFile for every DDL
+    parse();
     ImmutableSet.Builder<String> resultBuilder = ImmutableSet.builder();
     for (String groupName : groups) {
       for (Map.Entry<String, Set<String>> row : groupRolePrivilegeTable.row(groupName)
@@ -233,6 +236,8 @@ public class SimpleFileProviderBackend implements ProviderBackend {
         }
       }
       parseIni(null, ini, validators, resourcePath, groupRolePrivilegeTableTemp);
+      // clear groupRolePrivilegeTable when first parse
+      groupRolePrivilegeTable.clear();
       mergeResult(groupRolePrivilegeTableTemp);
       groupRolePrivilegeTableTemp.clear();
       Ini.Section filesSection = ini.getSection(DATABASES);

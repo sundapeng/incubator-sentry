@@ -27,6 +27,7 @@ import org.apache.sentry.provider.db.SentryAccessDeniedException;
 import org.apache.sentry.provider.file.PolicyFile;
 import org.apache.sentry.service.thrift.HAClientInvocationHandler;
 import org.apache.sentry.tests.e2e.hive.AbstractTestWithStaticConfiguration;
+import org.apache.sentry.tests.e2e.hive.StaticUserGroup;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;

@@ -47,6 +47,7 @@ import org.apache.sentry.binding.hive.HiveAuthzBindingHook;
 import org.apache.sentry.binding.hive.HiveAuthzBindingSessionHook;
 import org.apache.sentry.binding.hive.conf.HiveAuthzConf;
 import org.apache.sentry.binding.hive.conf.HiveAuthzConf.AuthzConfVars;
+import org.apache.sentry.binding.hive.v2.HiveAuthzBindingSessionHookV2;
 import org.apache.sentry.core.common.SentryConfigurationException;
 import org.apache.sentry.core.common.Subject;
 import org.apache.sentry.core.model.db.AccessConstants;
@@ -457,7 +458,7 @@ public class SentryConfigTool {
   // verify senty session hook is set
   private boolean isSentryEnabledOnHiveServer(Statement stmt)
       throws SQLException {
-    return HiveAuthzBindingSessionHook.class.getName().equalsIgnoreCase(
+    return HiveAuthzBindingSessionHookV2.class.getName().equalsIgnoreCase(
         readConfig(stmt, HiveConf.ConfVars.HIVE_SERVER2_SESSION_HOOK.varname));
   }
 
