@@ -147,7 +147,6 @@ public class SentryAuthorizerImpl implements HiveAuthorizer {
   @Override
   public List<HivePrivilegeObject> filterListCmdObjects(List<HivePrivilegeObject> listObjs,
       HiveAuthzContext context) throws HiveAuthzPluginException, HiveAccessControlException {
-    // TODO Auto-generated method stub
-    return null;
+    return listObjs;
   }
 }
