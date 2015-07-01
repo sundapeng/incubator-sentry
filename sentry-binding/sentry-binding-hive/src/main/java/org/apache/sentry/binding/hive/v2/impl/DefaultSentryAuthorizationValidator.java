@@ -297,7 +297,6 @@ public class DefaultSentryAuthorizationValidator extends SentryAuthorizationVali
   @Override
   public List<HivePrivilegeObject> filterListCmdObjects(List<HivePrivilegeObject> listObjs,
       HiveAuthzContext context) {
-    // TODO Auto-generated method stub
-    return null;
+    return listObjs;
   }
 }
