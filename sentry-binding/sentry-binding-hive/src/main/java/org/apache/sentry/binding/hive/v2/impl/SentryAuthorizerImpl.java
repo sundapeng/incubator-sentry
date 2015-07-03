@@ -20,6 +20,13 @@ package org.apache.sentry.binding.hive.v2.impl;
 import java.util.List;
 
 import org.apache.hadoop.hive.conf.HiveConf;
+import org.apache.hadoop.hive.ql.exec.SentryHivePrivilegeObject;
+import org.apache.hadoop.hive.ql.exec.SentryHivePrivilegeObjectDesc;
+import org.apache.hadoop.hive.ql.metadata.HiveException;
+import org.apache.hadoop.hive.ql.plan.PrincipalDesc;
+import org.apache.hadoop.hive.ql.plan.PrivilegeDesc;
+import org.apache.hadoop.hive.ql.plan.PrivilegeObjectDesc;
+import org.apache.hadoop.hive.ql.security.authorization.AuthorizationUtils;
 import org.apache.hadoop.hive.ql.security.authorization.plugin.HiveAccessControlException;
 import org.apache.hadoop.hive.ql.security.authorization.plugin.HiveAuthorizer;
 import org.apache.hadoop.hive.ql.security.authorization.plugin.HiveAuthzContext;
@@ -30,6 +37,7 @@ import org.apache.hadoop.hive.ql.security.authorization.plugin.HivePrivilege;
 import org.apache.hadoop.hive.ql.security.authorization.plugin.HivePrivilegeInfo;
 import org.apache.hadoop.hive.ql.security.authorization.plugin.HivePrivilegeObject;
 import org.apache.hadoop.hive.ql.security.authorization.plugin.HiveRoleGrant;
+import org.apache.hadoop.hive.ql.security.authorization.plugin.HivePrivilegeObject.HivePrivilegeObjectType;
 import org.apache.sentry.binding.hive.v2.SentryAccessController;
 import org.apache.sentry.binding.hive.v2.SentryAuthorizationValidator;
 
@@ -148,5 +156,45 @@ public class SentryAuthorizerImpl implements HiveAuthorizer {
   public List<HivePrivilegeObject> filterListCmdObjects(List<HivePrivilegeObject> listObjs,
       HiveAuthzContext context) throws HiveAuthzPluginException, HiveAccessControlException {
     return listObjs;
+  }
+
+  @Override
+  public List<HivePrincipal> getHivePrincipals(
+      List<PrincipalDesc> principals) throws HiveException {
+    return AuthorizationUtils.getHivePrincipals(principals);
+  }
+
+  @Override
+  public List<HivePrivilege> getHivePrivileges(List<PrivilegeDesc> privileges) {
+    return AuthorizationUtils.getHivePrivileges(privileges);
+  }
+
+  @Override
+  public HivePrivilegeObject getHivePrivilegeObject(
+      PrivilegeObjectDesc privSubjectDesc) throws HiveException {
+    SentryHivePrivilegeObjectDesc sPrivSubjectDesc = null;
+    if (privSubjectDesc instanceof SentryHivePrivilegeObjectDesc) {
+      sPrivSubjectDesc = (SentryHivePrivilegeObjectDesc) privSubjectDesc;
+    }
+    if (sPrivSubjectDesc != null && sPrivSubjectDesc.isSentryPrivObjectDesc()) {
+      HivePrivilegeObjectType objectType = getPrivObjectType(sPrivSubjectDesc);
+      return new SentryHivePrivilegeObject(objectType, privSubjectDesc.getObject());
+    } else {
+      return AuthorizationUtils.getHivePrivilegeObject(privSubjectDesc);
+    }
+  }
+
+  private static HivePrivilegeObjectType getPrivObjectType(SentryHivePrivilegeObjectDesc privSubjectDesc) {
+    if (privSubjectDesc.getObject() == null) {
+      return null;
+    }
+    if (privSubjectDesc.getServer()) {
+      return HivePrivilegeObjectType.GLOBAL;
+    } else if (privSubjectDesc.getUri()){
+      return HivePrivilegeObjectType.LOCAL_URI;
+    } else {
+      return privSubjectDesc.getTable() ? HivePrivilegeObjectType.TABLE_OR_VIEW :
+        HivePrivilegeObjectType.DATABASE;
+    }
   }
 }

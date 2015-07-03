@@ -17,34 +17,18 @@
 
 package org.apache.hadoop.hive.ql.exec;
 
-import org.apache.hadoop.hive.ql.plan.PrivilegeObjectDesc;
+import org.apache.hadoop.hive.ql.security.authorization.plugin.HivePrivilegeObject;
 
-public class SentryHivePrivilegeObjectDesc extends PrivilegeObjectDesc {
-  private boolean isUri;
-  private boolean isServer;
+public class SentryHivePrivilegeObject extends HivePrivilegeObject {
 
-  public SentryHivePrivilegeObjectDesc() {
-    // reset table type which is on by default
-    super.setTable(false);
+  boolean isServer = false;
+  
+  boolean isUri = false;
+  
+  String objectName = "";
+
+  public SentryHivePrivilegeObject(HivePrivilegeObjectType type, String objectName) {
+    super(type, null, objectName);
   }
 
-  public boolean getUri() {
-    return isUri;
-  }
-
-  public void setUri(boolean isUri) {
-    this.isUri = isUri;
-  }
-
-  public boolean getServer() {
-    return isServer;
-  }
-
-  public void setServer(boolean isServer) {
-    this.isServer = isServer;
-  }
-
-  public boolean isSentryPrivObjectDesc() {
-    return isServer || isUri;
-  }
 }
