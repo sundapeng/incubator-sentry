@@ -347,7 +347,7 @@ public abstract class AbstractTestWithStaticConfiguration {
         statement.execute("CREATE TABLE IF NOT EXISTS " + tableName + " (c1 string) ");
         statement.execute("GRANT " + action + " ON TABLE " + tableName + " TO ROLE " + roleName);
       } else if (dbName != null) {
-        statement.execute("CREATE TABLE IF NOT EXISTS " + tableName + " (c1 string) ");
+        statement.execute("CREATE DATABASE IF NOT EXISTS " + dbName);
         statement.execute("GRANT " + action + " ON DATABASE " + dbName + " TO ROLE " + roleName);
       } else if (uriPath != null) {
         statement.execute("GRANT " + action + " ON URI '" + uriPath + "' TO ROLE " + roleName);//ALL?
