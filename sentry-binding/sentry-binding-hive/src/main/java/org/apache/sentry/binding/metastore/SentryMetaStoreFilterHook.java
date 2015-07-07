@@ -131,7 +131,7 @@ public class SentryMetaStoreFilterHook implements MetaStoreFilterHook {
       return HiveAuthzBindingHook.filterShowDatabases(getHiveAuthzBinding(),
           dbList, HiveOperation.SHOWDATABASES, getUserName());
     } catch (Exception e) {
-      LOG.warn("Error getting DB list ", e);
+      LOG.error("Error getting DB list ", e);
       return new ArrayList<String>();
     } finally {
       close();

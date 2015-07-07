@@ -256,7 +256,7 @@ public class HiveAuthzPrivilegesMap {
 
     // SHOWDATABASES
     // SHOWTABLES
-    hiveAuthzStmtPrivMap.put(HiveOperation.SHOWCOLUMNS, tableMetaDataPrivilege);
+    //hiveAuthzStmtPrivMap.put(HiveOperation.SHOWCOLUMNS, tableMetaDataPrivilege);
     hiveAuthzStmtPrivMap.put(HiveOperation.SHOW_TABLESTATUS, tableMetaDataPrivilege);
     hiveAuthzStmtPrivMap.put(HiveOperation.SHOW_TBLPROPERTIES, tableMetaDataPrivilege);
     hiveAuthzStmtPrivMap.put(HiveOperation.SHOW_CREATETABLE, tableMetaDataPrivilege);
