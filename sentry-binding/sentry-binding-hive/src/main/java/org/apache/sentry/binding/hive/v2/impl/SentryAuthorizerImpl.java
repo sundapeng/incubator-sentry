@@ -155,7 +155,7 @@ public class SentryAuthorizerImpl implements HiveAuthorizer {
   @Override
   public List<HivePrivilegeObject> filterListCmdObjects(List<HivePrivilegeObject> listObjs,
       HiveAuthzContext context) throws HiveAuthzPluginException, HiveAccessControlException {
-    return listObjs;
+    return authValidator.filterListCmdObjects(listObjs,context);
   }
 
   @Override

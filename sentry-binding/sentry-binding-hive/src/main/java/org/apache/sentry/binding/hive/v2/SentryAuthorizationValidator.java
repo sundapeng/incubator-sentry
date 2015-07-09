@@ -75,4 +75,7 @@ public abstract class SentryAuthorizationValidator implements HiveAuthorizationV
       List<HivePrivilegeObject> outputHObjs,
       HiveAuthzContext context) throws SentryAccessControlException;
 
+  public abstract List<HivePrivilegeObject> filterListCmdObjects(
+      List<HivePrivilegeObject> listObjs, HiveAuthzContext context);
+
 }

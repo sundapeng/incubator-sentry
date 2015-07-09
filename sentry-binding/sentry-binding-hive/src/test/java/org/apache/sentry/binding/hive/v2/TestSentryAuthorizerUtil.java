@@ -183,7 +183,7 @@ public class TestSentryAuthorizerUtil {
   @Test
   public void testConvert2HiveOperation() throws Exception {
     HiveOperationType type = HiveOperationType.CREATETABLE;
-    HiveOperation hiveOp = SentryAuthorizerUtil.convert2HiveOperation(type);
+    HiveOperation hiveOp = SentryAuthorizerUtil.convert2HiveOperation(type.name());
     Assert.assertEquals(HiveOperation.CREATETABLE, hiveOp);
   }
 

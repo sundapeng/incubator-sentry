@@ -186,9 +186,8 @@ public class SentryAuthorizerUtil {
    *
    * @param type
    */
-  public static HiveOperation convert2HiveOperation(HiveOperationType type) {
-    String typeName = type.name();
-    if (HIVE_OPERATION_MAPPING.get(type.name()) != null) {
+  public static HiveOperation convert2HiveOperation(String typeName) {
+    if (HIVE_OPERATION_MAPPING.get(typeName) != null) {
       typeName = HIVE_OPERATION_MAPPING.get(typeName);
     }
     return HiveOperation.valueOf(typeName);
