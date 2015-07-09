@@ -114,8 +114,6 @@ public class TestDbSentryOnFailureHookLoading extends AbstractTestWithDbProvider
     statement.execute("CREATE DATABASE DB_2");
     statement.execute("CREATE TABLE db_2.tab1(a int )");
 
-    statement.execute("USE db_2");
-    statement.execute("GRANT SELECT ON TABLE tab2 TO ROLE read_db2_tab2");// To give user1 privilege to do USE db_2
     statement.close();
     connection.close();
 
@@ -128,7 +126,21 @@ public class TestDbSentryOnFailureHookLoading extends AbstractTestWithDbProvider
 
     // Failure hook for create table when table exist
     verifyFailureHook(statement, "CREATE TABLE DB_2.TAB1(id INT)", HiveOperation.CREATETABLE, "db_2", null, false);
+    statement.close();
+    connection.close();
 
+    // To give user1 privilege to do USE db_2
+    connection = context.createConnection(ADMIN1);
+    statement = context.createStatement(connection);
+    statement.execute("USE db_2");
+    statement.execute("CREATE TABLE DB_2.TAB2(id INT)");
+    statement.execute("GRANT SELECT ON Table tab2 TO ROLE read_db2_tab2");
+    statement.close();
+    connection.close();
+
+    connection = context.createConnection(USER1_1);
+    statement = context.createStatement(connection);
+   
     // Failure hook for select * from table when table exist
     verifyFailureHook(statement, "select * from db_2.tab1", HiveOperation.QUERY,
         null, null, false);
@@ -178,6 +190,7 @@ public class TestDbSentryOnFailureHookLoading extends AbstractTestWithDbProvider
 
     statement.execute("USE DB_1");
     statement.execute("CREATE TABLE foo (id int)");
+    statement.execute("CREATE TABLE tab1 (id int)");
 
     verifyFailureHook(statement, "CREATE ROLE fooTest",
         HiveOperation.CREATEROLE, null, null, true);
@@ -212,14 +225,14 @@ public class TestDbSentryOnFailureHookLoading extends AbstractTestWithDbProvider
     //Should pass as user1_1 is granted role all_db1
     statement.execute("SHOW GRANT role all_db1");
 
-        //Grant privilege on table doesnt expose db and table objects
+    //Grant privilege on table doesnt expose db and table objects
     verifyFailureHook(statement,
         "GRANT ALL ON TABLE tab1 TO ROLE admin_role",
         HiveOperation.GRANT_PRIVILEGE, null, null, true);
 
     //Revoke privilege on table doesnt expose db and table objects
     verifyFailureHook(statement,
-        "REVOKE ALL ON TABLE server1 FROM ROLE admin_role",
+        "REVOKE ALL ON TABLE tab1 FROM ROLE admin_role",
         HiveOperation.REVOKE_PRIVILEGE, null, null, true);
 
     //Grant privilege on database doesnt expose db and table objects

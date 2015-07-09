@@ -149,7 +149,6 @@ public class DefaultSentryAuthorizationValidator extends SentryAuthorizationVali
         return;
       }
 
-
       List<List<DBModelAuthorizable>> inputHierarchyList =
           SentryAuthorizerUtil.convert2SentryPrivilegeList(hiveAuthzBinding.getAuthServer(), inputHObjs);
       List<List<DBModelAuthorizable>> outputHierarchyList =
@@ -162,9 +161,29 @@ public class DefaultSentryAuthorizationValidator extends SentryAuthorizationVali
       hiveAuthzBinding.authorize(hiveOp, stmtAuthPrivileges, new Subject(authenticator.getUserName()),
           inputHierarchyList, outputHierarchyList);
     } catch (AuthorizationException e) {
+      Database db = null;
+      Table tab = null;
+      AccessURI udfURI = null;
+      AccessURI partitionURI = null;
+      for (HivePrivilegeObject obj : outputHObjs) {
+        switch (obj.getType()) {
+          case DATABASE:
+            db = new Database(obj.getObjectName());
+            break;
+          case TABLE_OR_VIEW:
+            db = new Database(obj.getDbname());
+            tab = new Table(obj.getObjectName());
+            break;
+          case PARTITION:
+            db = new Database(obj.getDbname());
+            tab = new Table(obj.getObjectName());
+          case LOCAL_URI:
+          case DFS_URI:
+        }
+      }
       SentryOnFailureHookContext hookCtx = new SentryOnFailureHookContextImpl(
           context.getCommandString(), null, null,
-          hiveOp, null, null, null, null, authenticator.getUserName(),
+          hiveOp, db, tab, udfURI, partitionURI, authenticator.getUserName(),
           context.getIpAddress(), e, authzConf);
       SentryAuthorizerUtil.executeOnFailureHooks(hookCtx, authzConf);
       String permsRequired = "";
