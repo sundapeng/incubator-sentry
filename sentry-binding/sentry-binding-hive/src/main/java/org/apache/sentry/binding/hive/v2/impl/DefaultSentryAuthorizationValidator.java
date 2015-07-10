@@ -165,20 +165,22 @@ public class DefaultSentryAuthorizationValidator extends SentryAuthorizationVali
       Table tab = null;
       AccessURI udfURI = null;
       AccessURI partitionURI = null;
-      for (HivePrivilegeObject obj : outputHObjs) {
-        switch (obj.getType()) {
-          case DATABASE:
-            db = new Database(obj.getObjectName());
-            break;
-          case TABLE_OR_VIEW:
-            db = new Database(obj.getDbname());
-            tab = new Table(obj.getObjectName());
-            break;
-          case PARTITION:
-            db = new Database(obj.getDbname());
-            tab = new Table(obj.getObjectName());
-          case LOCAL_URI:
-          case DFS_URI:
+      if (outputHObjs!=null) {
+        for (HivePrivilegeObject obj : outputHObjs) {
+          switch (obj.getType()) {
+            case DATABASE:
+              db = new Database(obj.getObjectName());
+              break;
+            case TABLE_OR_VIEW:
+              db = new Database(obj.getDbname());
+              tab = new Table(obj.getObjectName());
+              break;
+            case PARTITION:
+              db = new Database(obj.getDbname());
+              tab = new Table(obj.getObjectName());
+            case LOCAL_URI:
+            case DFS_URI:
+          }
         }
       }
       SentryOnFailureHookContext hookCtx = new SentryOnFailureHookContextImpl(
