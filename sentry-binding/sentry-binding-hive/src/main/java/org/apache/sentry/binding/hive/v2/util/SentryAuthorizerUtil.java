@@ -274,6 +274,7 @@ public class SentryAuthorizerUtil {
       case URI:
         String uriString = tSentryPrivilege.getURI();
         try {
+          uriString = uriString.replace("'", "").replace("\"", "");
           HivePrivilegeObjectType type = isLocalUri(uriString) ?
               HivePrivilegeObjectType.LOCAL_URI : HivePrivilegeObjectType.DFS_URI;
           privilege = new HivePrivilegeObject(type, uriString, null);

@@ -430,7 +430,7 @@ public class DefaultSentryAccessController extends SentryAccessController {
               privInfo = privBuilder
                 .setPrivilegeScope(PrivilegeScope.URI.toString())
                 .setServerName(serverName)
-                .setURI(hivePrivObject.getObjectName())
+                .setURI(hivePrivObject.getObjectName().replace("'", "").replace("\"", ""))
                 // TODO In current version, URI privilege only support action of ALL
                 .setAction(AccessConstants.ALL)
                 .setGrantOption(grantOp)
