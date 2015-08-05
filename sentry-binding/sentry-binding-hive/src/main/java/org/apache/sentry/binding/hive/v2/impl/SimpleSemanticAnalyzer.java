@@ -159,13 +159,45 @@ public class SimpleSemanticAnalyzer {
       "AS\\s" +
       "([A-Za-z0-9._']+)";
 
+  /**
+   * LOCK DATABASE dbname;
+   */
+  private static final String LOCKDB =
+      "^LOCK\\s+" +
+      "DATABASE\\s+" +
+      "([A-Za-z0-9._]+)";
+
+  /**
+   * UNLOCK DATABASE dbname;
+   */
+  private static final String UNLOCKDB =
+      "^UNLOCK\\s+" +
+      "DATABASE\\s+" +
+      "([A-Za-z0-9._]+)";
+
+  /**
+   * LOCK TABLE tblname;
+   */
+  private static final String LOCKTABLE =
+      "^LOCK\\s+" +
+      "TABLE\\s+" +
+      "([A-Za-z0-9._]+)";
+
+  /**
+   * UNLOCK TABLE tblname;
+   */
+  private static final String UNLOCKTABLE =
+      "^UNLOCK\\s+" +
+      "TABLE\\s+" +
+      "([A-Za-z0-9._]+)";
+
   private static Map<HiveOperation, String> OP_REGEX_MAP = new HashMap<HiveOperation, String>();
   static {
     // database metadata
     OP_REGEX_MAP.put(HiveOperation.DROPDATABASE, DROP_DB_REGEX);
     OP_REGEX_MAP.put(HiveOperation.DESCDATABASE, DESCRIBE_DB_REGEX);
 
-    // tabale metadata
+    // table metadata
     OP_REGEX_MAP.put(HiveOperation.CREATETABLE, CREATE_TABLE_REGEX);
     OP_REGEX_MAP.put(HiveOperation.DROPTABLE, DROP_TABLE_REGEX);
     OP_REGEX_MAP.put(HiveOperation.DROPVIEW, DROP_VIEW_REGEX);
@@ -201,6 +233,10 @@ public class SimpleSemanticAnalyzer {
     OP_REGEX_MAP.put(HiveOperation.MSCK, MSCK_REGEX);
     OP_REGEX_MAP.put(HiveOperation.ALTERINDEX_REBUILD, ALTER_INDEX_REGEX);
     OP_REGEX_MAP.put(HiveOperation.ALTERINDEX_PROPS, ALTER_INDEX_REGEX);
+    OP_REGEX_MAP.put(HiveOperation.LOCKDB, LOCKDB);
+    OP_REGEX_MAP.put(HiveOperation.UNLOCKDB, UNLOCKDB);
+    OP_REGEX_MAP.put(HiveOperation.LOCKTABLE, LOCKTABLE);
+    OP_REGEX_MAP.put(HiveOperation.UNLOCKTABLE, UNLOCKTABLE);
   }
 
   public SimpleSemanticAnalyzer(HiveOperation hiveOp, String cmd) throws SentryAccessControlException {
@@ -212,6 +248,8 @@ public class SimpleSemanticAnalyzer {
     switch (hiveOp) {
       case DROPDATABASE:
       case DESCDATABASE:
+      case LOCKDB:
+      case UNLOCKDB:
         parseDbMeta(cmd, OP_REGEX_MAP.get(hiveOp));
         break;
       case DESCTABLE:
@@ -254,6 +292,8 @@ public class SimpleSemanticAnalyzer {
         // alter index
       case ALTERINDEX_REBUILD:
       case ALTERINDEX_PROPS:
+      case LOCKTABLE:
+      case UNLOCKTABLE:
         parseTableMeta(cmd, OP_REGEX_MAP.get(hiveOp));
         break;
       case SHOWINDEXES:

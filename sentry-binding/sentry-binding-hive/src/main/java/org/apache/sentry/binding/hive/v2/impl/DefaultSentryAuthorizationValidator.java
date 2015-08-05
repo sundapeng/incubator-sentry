@@ -67,10 +67,11 @@ public class DefaultSentryAuthorizationValidator extends SentryAuthorizationVali
   // all operations need to extend at DB scope
   private static final Set<HiveOperation> EX_DB_ALL = Sets.newHashSet(HiveOperation.DROPDATABASE,
       HiveOperation.CREATETABLE, HiveOperation.IMPORT, HiveOperation.DESCDATABASE,
-      HiveOperation.ALTERTABLE_RENAME);
+      HiveOperation.ALTERTABLE_RENAME, HiveOperation.LOCKDB, HiveOperation.UNLOCKDB);
   // input operations need to extend at DB scope
   private static final Set<HiveOperation> EX_DB_INPUT = Sets.newHashSet(HiveOperation.DROPDATABASE,
-      HiveOperation.DESCDATABASE, HiveOperation.ALTERTABLE_RENAME);
+      HiveOperation.DESCDATABASE, HiveOperation.ALTERTABLE_RENAME,
+      HiveOperation.LOCKDB, HiveOperation.UNLOCKDB);
 
   // all operations need to extend at Table scope
   private static final Set<HiveOperation> EX_TB_ALL = Sets.newHashSet(
@@ -107,11 +108,14 @@ public class DefaultSentryAuthorizationValidator extends SentryAuthorizationVali
       HiveOperation.ALTERPARTITION_LOCATION,
       HiveOperation.ALTERTBLPART_SKEWED_LOCATION,
       HiveOperation.MSCK,
-      HiveOperation.ALTERINDEX_REBUILD);
+      HiveOperation.ALTERINDEX_REBUILD,
+      HiveOperation.LOCKTABLE,
+      HiveOperation.UNLOCKTABLE);
   // input operations need to extend at Table scope
   private static final Set<HiveOperation> EX_TB_INPUT = Sets.newHashSet(HiveOperation.DROPTABLE,
       HiveOperation.DROPVIEW, HiveOperation.DESCTABLE, HiveOperation.SHOW_TBLPROPERTIES,
-      HiveOperation.SHOWINDEXES, HiveOperation.ALTERINDEX_REBUILD);
+      HiveOperation.SHOWINDEXES, HiveOperation.ALTERINDEX_REBUILD,
+      HiveOperation.LOCKTABLE,HiveOperation.UNLOCKTABLE);
 
   public DefaultSentryAuthorizationValidator(
       HiveConf conf,
@@ -154,7 +158,7 @@ public class DefaultSentryAuthorizationValidator extends SentryAuthorizationVali
       List<List<DBModelAuthorizable>> outputHierarchyList =
           SentryAuthorizerUtil.convert2SentryPrivilegeList(hiveAuthzBinding.getAuthServer(), outputHObjs);
 
-      // workaroud for metadata queries
+      // Workaround for metadata queries
       addExtendHierarchy(hiveOp, stmtAuthPrivileges, inputHierarchyList,
           outputHierarchyList, context.getCommandString(), hiveAuthzBinding);
 
