@@ -20,9 +20,7 @@ package org.apache.sentry.binding.hive.v2.util;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import org.apache.hadoop.conf.Configuration;
@@ -35,7 +33,6 @@ import org.apache.hadoop.hive.ql.metadata.AuthorizationException;
 import org.apache.hadoop.hive.ql.parse.SemanticException;
 import org.apache.hadoop.hive.ql.plan.HiveOperation;
 import org.apache.hadoop.hive.ql.security.authorization.PrivilegeType;
-import org.apache.hadoop.hive.ql.security.authorization.plugin.HiveOperationType;
 import org.apache.hadoop.hive.ql.security.authorization.plugin.HivePrincipal;
 import org.apache.hadoop.hive.ql.security.authorization.plugin.HivePrincipal.HivePrincipalType;
 import org.apache.hadoop.hive.ql.security.authorization.plugin.HivePrivilege;
@@ -68,12 +65,6 @@ public class SentryAuthorizerUtil {
   public static final Logger LOG = LoggerFactory.getLogger(SentryAuthorizerUtil.class);
   public static String UNKONWN_GRANTOR = "--";
 
-  private static Map<String, String> HIVE_OPERATION_MAPPING = new HashMap<String, String>();
-  static {
-    HIVE_OPERATION_MAPPING.put("GET_SCHEMAS", HiveOperation.SHOWDATABASES.name());
-    HIVE_OPERATION_MAPPING.put("GET_TABLES", HiveOperation.SHOWTABLES.name());
-    HIVE_OPERATION_MAPPING.put("GET_COLUMNS", HiveOperation.SHOWCOLUMNS.name());
-  }
   /**
    * Convert string to URI
    *
@@ -187,10 +178,11 @@ public class SentryAuthorizerUtil {
    * @param type
    */
   public static HiveOperation convert2HiveOperation(String typeName) {
-    if (HIVE_OPERATION_MAPPING.get(typeName) != null) {
-      typeName = HIVE_OPERATION_MAPPING.get(typeName);
+    try {
+      return HiveOperation.valueOf(typeName);
+    } catch (Exception e) {
+      return null;
     }
-    return HiveOperation.valueOf(typeName);
   }
 
   /**
