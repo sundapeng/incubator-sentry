@@ -16,6 +16,9 @@
  */
 package org.apache.sentry.binding.hive.v2;
 
+import java.net.MalformedURLException;
+import java.net.URL;
+
 import org.apache.hadoop.hive.conf.HiveConf;
 import org.apache.hadoop.hive.conf.HiveConf.ConfVars;
 import org.apache.hadoop.mapreduce.JobContext;
@@ -75,8 +78,12 @@ public class HiveAuthzBindingSessionHookV2
     // Enable compiler to capture transform URI referred in the query
     sessionConf.setBoolVar(ConfVars.HIVE_CAPTURE_TRANSFORM_ENTITY, true);
 
-    // set security command list to only allow set command
-    sessionConf.setVar(ConfVars.HIVE_SECURITY_COMMAND_WHITELIST, "set");
+    // set security command list
+    HiveAuthzConf authzConf = loadAuthzConf(sessionConf);
+    String commandWhitelist =
+        authzConf.get(HiveAuthzConf.HIVE_SENTRY_SECURITY_COMMAND_WHITELIST,
+            HiveAuthzConf.HIVE_SENTRY_SECURITY_COMMAND_WHITELIST_DEFAULT);
+    sessionConf.setVar(ConfVars.HIVE_SECURITY_COMMAND_WHITELIST, commandWhitelist);
 
     // set additional configuration properties required for auth
     sessionConf.setVar(ConfVars.SCRATCHDIRPERMISSION, SCRATCH_DIR_PERMISSIONS);
@@ -105,5 +112,32 @@ public class HiveAuthzBindingSessionHookV2
       currentValue = sentryConfVal + "," + currentValue;
     }
     sessionConf.set(confVar, currentValue);
+  }
+
+  public static HiveAuthzConf loadAuthzConf(HiveConf hiveConf) {
+    boolean depreicatedConfigFile = false;
+    HiveAuthzConf newAuthzConf = null;
+    String hiveAuthzConf = hiveConf.get(HiveAuthzConf.HIVE_SENTRY_CONF_URL);
+    if(hiveAuthzConf == null || (hiveAuthzConf = hiveAuthzConf.trim()).isEmpty()) {
+      hiveAuthzConf = hiveConf.get(HiveAuthzConf.HIVE_ACCESS_CONF_URL);
+      depreicatedConfigFile = true;
+    }
+
+    if(hiveAuthzConf == null || (hiveAuthzConf = hiveAuthzConf.trim()).isEmpty()) {
+      throw new IllegalArgumentException("Configuration key " + HiveAuthzConf.HIVE_SENTRY_CONF_URL
+          + " value '" + hiveAuthzConf + "' is invalid.");
+    }
+    try {
+      newAuthzConf = new HiveAuthzConf(new URL(hiveAuthzConf));
+    } catch (MalformedURLException e) {
+      if (depreicatedConfigFile) {
+        throw new IllegalArgumentException("Configuration key " + HiveAuthzConf.HIVE_ACCESS_CONF_URL
+            + " specifies a malformed URL '" + hiveAuthzConf + "'", e);
+      } else {
+        throw new IllegalArgumentException("Configuration key " + HiveAuthzConf.HIVE_SENTRY_CONF_URL
+            + " specifies a malformed URL '" + hiveAuthzConf + "'", e);
+      }
+    }
+    return newAuthzConf;
   }
 }
