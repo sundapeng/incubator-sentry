@@ -110,12 +110,13 @@ public class DefaultSentryAuthorizationValidator extends SentryAuthorizationVali
       HiveOperation.MSCK,
       HiveOperation.ALTERINDEX_REBUILD,
       HiveOperation.LOCKTABLE,
-      HiveOperation.UNLOCKTABLE);
+      HiveOperation.UNLOCKTABLE,
+      HiveOperation.SHOWCOLUMNS);
   // input operations need to extend at Table scope
   private static final Set<HiveOperation> EX_TB_INPUT = Sets.newHashSet(HiveOperation.DROPTABLE,
       HiveOperation.DROPVIEW, HiveOperation.DESCTABLE, HiveOperation.SHOW_TBLPROPERTIES,
       HiveOperation.SHOWINDEXES, HiveOperation.ALTERINDEX_REBUILD,
-      HiveOperation.LOCKTABLE,HiveOperation.UNLOCKTABLE);
+      HiveOperation.LOCKTABLE, HiveOperation.UNLOCKTABLE, HiveOperation.SHOWCOLUMNS);
 
   public DefaultSentryAuthorizationValidator(
       HiveConf conf,

@@ -160,6 +160,15 @@ public class SimpleSemanticAnalyzer {
       "([A-Za-z0-9._']+)";
 
   /**
+   * SHOW COLUMNS FROM table_name
+   */
+  private static final String SHOWCOLUMNS =
+      "^SHOW\\s+" +
+      "COLUMNS\\s+" +
+      "FROM\\s+" +
+      "([A-Za-z0-9._]+)";
+
+  /**
    * LOCK DATABASE dbname;
    */
   private static final String LOCKDB =
@@ -237,6 +246,7 @@ public class SimpleSemanticAnalyzer {
     OP_REGEX_MAP.put(HiveOperation.UNLOCKDB, UNLOCKDB);
     OP_REGEX_MAP.put(HiveOperation.LOCKTABLE, LOCKTABLE);
     OP_REGEX_MAP.put(HiveOperation.UNLOCKTABLE, UNLOCKTABLE);
+    OP_REGEX_MAP.put(HiveOperation.SHOWCOLUMNS, SHOWCOLUMNS);
   }
 
   public SimpleSemanticAnalyzer(HiveOperation hiveOp, String cmd) throws SentryAccessControlException {
@@ -294,6 +304,7 @@ public class SimpleSemanticAnalyzer {
       case ALTERINDEX_PROPS:
       case LOCKTABLE:
       case UNLOCKTABLE:
+      case SHOWCOLUMNS:
         parseTableMeta(cmd, OP_REGEX_MAP.get(hiveOp));
         break;
       case SHOWINDEXES:
