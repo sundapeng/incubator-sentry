@@ -133,7 +133,7 @@ public class TestKafkaAuthorizationProviderGeneralCases {
   }
 
   @Test
-  public void testSubAdmin() throws Exception {
+  public void testAdmin() throws Exception {
     
     doTestResourceAuthorizationProvider(SUB_ADMIN, Arrays.asList(server1,cluster1), allActions, true);
     doTestResourceAuthorizationProvider(SUB_ADMIN, Arrays.asList(server1,topic1), allActions, true);

@@ -48,7 +48,7 @@ public class KafkaModelAuthorizables {
       return new Cluster(name);
     case TOPIC:
       return new Topic(name);
-    case CONSUMER_GROUP:
+    case CONSUMERGROUP:
       return new ConsumerGroup(name);
     default:
       return null;
