@@ -26,7 +26,7 @@ public class KafkaActionConstant {
   public static final String DELETE = "delete";
   public static final String ALTER = "alter";
   public static final String DESCRIBE = "describe";
-  public static final String CLUSTER_ACTION = "cluster_action";
+  public static final String CLUSTER_ACTION = "clusteraction";
 
   public static final String actionName = "action";
 }
