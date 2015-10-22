@@ -224,14 +224,16 @@ public class SentryMetastorePostEventListener extends MetaStoreEventListener {
   }
 
   @Override
-  public void onAddPartition(AddPartitionEvent partitionEvent)
-      throws MetaException {
-    for (Partition part : partitionEvent.getPartitions()) {
-      if ((part.getSd() != null) && (part.getSd().getLocation() != null)) {
-        String authzObj = part.getDbName() + "." + part.getTableName();
-        String path = part.getSd().getLocation();
-        for (SentryMetastoreListenerPlugin plugin : sentryPlugins) {
-          plugin.addPath(authzObj, path);
+  public void onAddPartition(AddPartitionEvent partitionEvent) throws MetaException {
+    if (partitionEvent != null && partitionEvent.getPartitionIterator() != null) {
+      while (partitionEvent.getPartitionIterator().hasNext()) {
+        Partition part = partitionEvent.getPartitionIterator().next();
+        if ((part.getSd() != null) && (part.getSd().getLocation() != null)) {
+          String authzObj = part.getDbName() + "." + part.getTableName();
+          String path = part.getSd().getLocation();
+          for (SentryMetastoreListenerPlugin plugin : sentryPlugins) {
+            plugin.addPath(authzObj, path);
+          }
         }
       }
     }
@@ -239,13 +241,19 @@ public class SentryMetastorePostEventListener extends MetaStoreEventListener {
   }
 
   @Override
-  public void onDropPartition(DropPartitionEvent partitionEvent)
-      throws MetaException {
-    String authzObj = partitionEvent.getTable().getDbName() + "."
-        + partitionEvent.getTable().getTableName();
-    String path = partitionEvent.getPartition().getSd().getLocation();
-    for (SentryMetastoreListenerPlugin plugin : sentryPlugins) {
-      plugin.removePath(authzObj, path);
+  public void onDropPartition(DropPartitionEvent partitionEvent) throws MetaException {
+    if (partitionEvent != null && partitionEvent.getPartitionIterator() != null) {
+      String authzObj =
+          partitionEvent.getTable().getDbName() + "." + partitionEvent.getTable().getTableName();
+      while (partitionEvent.getPartitionIterator().hasNext()) {
+        Partition part = partitionEvent.getPartitionIterator().next();
+        if ((part.getSd() != null) && (part.getSd().getLocation() != null)) {
+          String path = part.getSd().getLocation();
+          for (SentryMetastoreListenerPlugin plugin : sentryPlugins) {
+            plugin.removePath(authzObj, path);
+          }
+        }
+      }
     }
     super.onDropPartition(partitionEvent);
   }
