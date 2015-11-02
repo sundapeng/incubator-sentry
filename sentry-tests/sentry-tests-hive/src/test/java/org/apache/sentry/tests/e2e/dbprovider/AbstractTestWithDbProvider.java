@@ -29,7 +29,7 @@ import org.apache.commons.io.FileUtils;
 import org.apache.curator.test.TestingServer;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hive.conf.HiveConf.ConfVars;
-import org.apache.sentry.binding.hive.SentryHiveAuthorizationTaskFactoryImpl;
+import org.apache.sentry.binding.hive.v2.SentryHiveAuthorizationTaskFactoryImplV2;
 import org.apache.sentry.provider.db.SimpleDBProviderBackend;
 import org.apache.sentry.provider.file.PolicyFile;
 import org.apache.sentry.service.thrift.SentryService;
@@ -72,7 +72,7 @@ public abstract class AbstractTestWithDbProvider extends AbstractTestWithHiveSer
     policyFile = PolicyFile.setAdminOnServer1(ADMINGROUP);
     properties.put(HiveServerFactory.AUTHZ_PROVIDER_BACKEND, SimpleDBProviderBackend.class.getName());
     properties.put(ConfVars.HIVE_AUTHORIZATION_TASK_FACTORY.varname,
-        SentryHiveAuthorizationTaskFactoryImpl.class.getName());
+        SentryHiveAuthorizationTaskFactoryImplV2.class.getName());
     properties.put(ServerConfig.SECURITY_MODE, ServerConfig.SECURITY_MODE_NONE);
     properties.put(ServerConfig.ADMIN_GROUPS, ADMINGROUP);
     properties.put(ServerConfig.RPC_ADDRESS, SERVER_HOST);
