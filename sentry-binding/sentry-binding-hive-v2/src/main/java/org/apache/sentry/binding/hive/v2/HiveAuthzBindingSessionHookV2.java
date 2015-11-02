@@ -31,6 +31,7 @@ import com.google.common.base.Joiner;
 public class HiveAuthzBindingSessionHookV2
     implements org.apache.hive.service.cli.session.HiveSessionHook {
   public static final String SCRATCH_DIR_PERMISSIONS = "700";
+  public static final String SEMANTIC_HOOK = HiveAuthzBindingHook.class.getName();
   public static final String ACCESS_RESTRICT_LIST = Joiner.on(",").join(
     ConfVars.PREEXECHOOKS.varname,
     ConfVars.SCRATCHDIR.varname,
@@ -66,6 +67,8 @@ public class HiveAuthzBindingSessionHookV2
     // Add sentry hooks to the session configuration
     HiveConf sessionConf = sessionHookContext.getSessionConf();
 
+    appendConfVar(sessionConf, ConfVars.SEMANTIC_ANALYZER_HOOK.varname,
+        SEMANTIC_HOOK);
     // enable sentry authorization V2
     sessionConf.setBoolean(HiveConf.ConfVars.HIVE_AUTHORIZATION_ENABLED.varname, true);
     sessionConf.setBoolean(HiveConf.ConfVars.HIVE_SERVER2_ENABLE_DOAS.varname, false);
