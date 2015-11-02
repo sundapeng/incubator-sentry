@@ -33,6 +33,7 @@ import org.apache.sentry.provider.file.PolicyFile;
 import org.apache.sentry.tests.e2e.hive.AbstractTestWithStaticConfiguration;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import com.google.common.io.Resources;
@@ -167,14 +168,14 @@ public class TestColumnEndToEnd extends AbstractTestWithStaticConfiguration {
       assertTrue("Sentry should not support privilege: Insert on Column", false);
     } catch (Exception e) {
       assertTrue("The error should be 'Sentry does not support privilege: Insert on Column'",
-          e.getMessage().contains("Sentry does not support privilege: Insert on Column"));
+          e.getMessage().toUpperCase().contains("Sentry does not support privilege: Insert on Column".toUpperCase()));
     }
     try {
       statement.execute("GRANT ALL (c2) ON TABLE t1 TO ROLE user_role2");
       assertTrue("Sentry should not support privilege: ALL on Column", false);
     } catch (Exception e) {
       assertTrue("The error should be 'Sentry does not support privilege: All on Column'",
-          e.getMessage().contains("Sentry does not support privilege: All on Column"));
+          e.getMessage().toUpperCase().contains("Sentry does not support privilege: All on Column".toUpperCase()));
     }
     statement.execute("GRANT ROLE user_role1 TO GROUP " + USERGROUP1);
     statement.execute("GRANT ROLE user_role2 TO GROUP " + USERGROUP2);

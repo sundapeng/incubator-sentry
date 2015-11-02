@@ -43,8 +43,8 @@ import org.apache.hadoop.fs.permission.FsAction;
 import org.apache.hadoop.fs.permission.FsPermission;
 import org.apache.hadoop.hive.conf.HiveConf;
 import org.apache.hadoop.hive.conf.HiveConf.ConfVars;
-import org.apache.sentry.binding.hive.SentryHiveAuthorizationTaskFactoryImpl;
-import org.apache.sentry.binding.metastore.SentryMetastorePostEventListener;
+import org.apache.sentry.binding.hive.v2.SentryHiveAuthorizationTaskFactoryImplV2;
+import org.apache.sentry.binding.hive.v2.metastore.SentryMetastorePostEventListenerV2;
 import org.apache.sentry.core.model.db.DBModelAction;
 import org.apache.sentry.core.model.db.DBModelAuthorizable;
 import org.apache.sentry.policy.db.DBModelAuthorizables;
@@ -58,9 +58,9 @@ import org.apache.sentry.tests.e2e.hive.fs.DFS;
 import org.apache.sentry.tests.e2e.hive.fs.DFSFactory;
 import org.apache.sentry.tests.e2e.hive.hiveserver.HiveServer;
 import org.apache.sentry.tests.e2e.hive.hiveserver.HiveServerFactory;
+import org.apache.sentry.tests.e2e.minisentry.SentrySrv;
 import org.apache.sentry.tests.e2e.minisentry.SentrySrvFactory;
 import org.apache.sentry.tests.e2e.minisentry.SentrySrvFactory.SentrySrvType;
-import org.apache.sentry.tests.e2e.minisentry.SentrySrv;
 import org.apache.tools.ant.util.StringUtils;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -135,7 +135,7 @@ public abstract class AbstractTestWithStaticConfiguration {
   protected static Configuration sentryConf;
   protected static boolean enableSentryHA = false;
   protected static Context context;
-  protected final String semanticException = "SemanticException No valid privileges";
+  protected final String semanticException = "HiveAccessControlException No valid privileges";
 
   public static void createContext() throws Exception {
     context = new Context(hiveServer, fileSystem,
@@ -389,7 +389,7 @@ public abstract class AbstractTestWithStaticConfiguration {
     properties.put(HiveServerFactory.AUTHZ_PROVIDER_BACKEND,
         SimpleDBProviderBackend.class.getName());
     properties.put(ConfVars.HIVE_AUTHORIZATION_TASK_FACTORY.varname,
-        SentryHiveAuthorizationTaskFactoryImpl.class.getName());
+        SentryHiveAuthorizationTaskFactoryImplV2.class.getName());
     properties
     .put(ConfVars.HIVE_SERVER2_THRIFT_MIN_WORKER_THREADS.varname, "2");
     properties.put(ServerConfig.SECURITY_MODE, ServerConfig.SECURITY_MODE_NONE);
@@ -429,7 +429,7 @@ public abstract class AbstractTestWithStaticConfiguration {
     if (setMetastoreListener) {
       LOGGER.info("setMetastoreListener is enabled");
       properties.put(HiveConf.ConfVars.METASTORE_EVENT_LISTENERS.varname,
-          SentryMetastorePostEventListener.class.getName());
+          SentryMetastorePostEventListenerV2.class.getName());
     }
 
   }

@@ -32,6 +32,10 @@ import org.apache.hadoop.hive.conf.HiveConf;
 import org.apache.hadoop.hive.conf.HiveConf.ConfVars;
 import org.apache.sentry.binding.hive.conf.HiveAuthzConf;
 import org.apache.sentry.binding.hive.conf.HiveAuthzConf.AuthzConfVars;
+import org.apache.sentry.binding.hive.v2.HiveAuthzBindingSessionHookV2;
+import org.apache.sentry.binding.hive.v2.SentryAuthorizerFactory;
+import org.apache.sentry.binding.hive.v2.metastore.AuthorizingObjectStoreV2;
+import org.apache.sentry.binding.hive.v2.metastore.MetastoreAuthzBindingV2;
 import org.apache.sentry.provider.file.LocalGroupResourceAuthorizationProvider;
 import org.fest.reflect.core.Reflection;
 import org.junit.Assert;
@@ -39,7 +43,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.common.annotations.VisibleForTesting;
-import com.google.common.io.Files;
 import com.google.common.io.Resources;
 
 public class HiveServerFactory {
@@ -153,8 +156,7 @@ public class HiveServerFactory {
     if(!properties.containsKey(HADOOPBIN)) {
       properties.put(HADOOPBIN, "./target/hadoop");
     }
-    properties.put(METASTORE_RAW_STORE_IMPL,
-        "org.apache.sentry.binding.metastore.AuthorizingObjectStore");
+    properties.put(METASTORE_RAW_STORE_IMPL, AuthorizingObjectStoreV2.class.getName());
     if (!properties.containsKey(METASTORE_URI)) {
       if (HiveServer2Type.InternalMetastore.equals(type)) {
         // The configuration sentry.metastore.service.users is for the user who
@@ -163,8 +165,7 @@ public class HiveServerFactory {
         properties.put(METASTORE_URI,
           "thrift://localhost:" + String.valueOf(findPort()));
         if (!properties.containsKey(METASTORE_HOOK)) {
-          properties.put(METASTORE_HOOK,
-              "org.apache.sentry.binding.metastore.MetastoreAuthzBinding");
+          properties.put(METASTORE_HOOK, MetastoreAuthzBindingV2.class.getName());
         }
         properties.put(ConfVars.METASTORESERVERMINTHREADS.varname, "5");
       }
@@ -225,9 +226,19 @@ public class HiveServerFactory {
     // points hive-site.xml at access-site.xml
     hiveConf.set(HiveAuthzConf.HIVE_SENTRY_CONF_URL, "file:///" + accessSite.getPath());
 
-    if(!properties.containsKey(HiveConf.ConfVars.HIVE_SERVER2_SESSION_HOOK.varname)) {
+    if (!properties.containsKey(HiveConf.ConfVars.HIVE_SERVER2_SESSION_HOOK.varname)) {
       hiveConf.set(HiveConf.ConfVars.HIVE_SERVER2_SESSION_HOOK.varname,
-        "org.apache.sentry.binding.hive.HiveAuthzBindingSessionHook");
+          HiveAuthzBindingSessionHookV2.class.getName());
+    }
+    switch (type) {
+      case EmbeddedHiveServer2:
+      case InternalHiveServer2:
+      case ExternalHiveServer2:
+        // authorization V2 is userd for hiveserver2
+        hiveConf.setBoolean(HiveConf.ConfVars.HIVE_AUTHORIZATION_ENABLED.varname, true);
+        hiveConf.setVar(ConfVars.HIVE_AUTHORIZATION_MANAGER,
+            SentryAuthorizerFactory.class.getName());
+      default:
     }
     hiveConf.set(HIVESERVER2_IMPERSONATION, "false");
     out = new FileOutputStream(hiveSite);

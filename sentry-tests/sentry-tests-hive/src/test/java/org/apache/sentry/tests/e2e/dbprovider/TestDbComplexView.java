@@ -230,9 +230,9 @@ public class TestDbComplexView extends AbstractTestWithStaticConfiguration {
 
         // validate privileges
         grantAndValidatePrivilege(TEST_VIEW, TEST_VIEW_ROLE, USERGROUP1, USER1_1);
-        grantAndValidatePrivilege(testView2, testRole2, USERGROUP2, USER2_1);
 
         // Disabled because of SENTRY-745, also need to backport HIVE-10875
+        //grantAndValidatePrivilege(testView2, testRole2, USERGROUP2, USER2_1);
         //grantAndValidatePrivilege(testView3, testRole3, USERGROUP3, USER3_1);
     }
 

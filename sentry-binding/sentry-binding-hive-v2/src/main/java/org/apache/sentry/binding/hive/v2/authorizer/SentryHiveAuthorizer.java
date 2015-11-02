@@ -41,7 +41,7 @@ import org.apache.sentry.binding.hive.v2.SentryHivePrivilegeObject;
  * implementations of {@link SentryHiveAccessController} and
  * {@link SentryHiveAuthorizationValidator} to constructor.
  */
-public abstract class SentryHiveAuthorizer implements HiveAuthorizer {
+public class SentryHiveAuthorizer implements HiveAuthorizer {
 
   private SentryHiveAccessController accessController;
   private SentryHiveAuthorizationValidator authValidator;

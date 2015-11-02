@@ -76,6 +76,7 @@ import org.apache.hadoop.mapred.TextOutputFormat;
 import org.apache.hadoop.security.UserGroupInformation;
 import org.apache.sentry.binding.hive.SentryHiveAuthorizationTaskFactoryImpl;
 import org.apache.sentry.binding.hive.conf.HiveAuthzConf;
+import org.apache.sentry.binding.hive.v2.metastore.MetastoreAuthzBindingV2;
 import org.apache.sentry.hdfs.SentryAuthorizationConstants;
 import org.apache.sentry.hdfs.SentryAuthorizationProvider;
 import org.apache.sentry.provider.db.SimpleDBProviderBackend;
@@ -253,7 +254,7 @@ public class TestHDFSIntegration {
         hmsPort = findPort();
         LOGGER.info("\n\n HMS port : " + hmsPort + "\n\n");
         hiveConf.set("hive.metastore.uris", "thrift://localhost:" + hmsPort);
-        hiveConf.set("hive.metastore.pre.event.listeners", "org.apache.sentry.binding.metastore.MetastoreAuthzBinding");
+        hiveConf.set("hive.metastore.pre.event.listeners", MetastoreAuthzBindingV2.class.getName());
         hiveConf.set("hive.metastore.event.listeners", "org.apache.sentry.binding.metastore.SentryMetastorePostEventListener");
         hiveConf.set("hive.security.authorization.task.factory", "org.apache.sentry.binding.hive.SentryHiveAuthorizationTaskFactoryImpl");
         hiveConf.set("hive.server2.session.hook", "org.apache.sentry.binding.hive.HiveAuthzBindingSessionHook");
