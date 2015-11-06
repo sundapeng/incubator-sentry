@@ -126,7 +126,7 @@ public class AuthorizingObjectStoreV2 extends ObjectStore {
       throws MetaException {
     return filterTables(dbName, super.getTables(dbName, pattern));
   }
-  
+
   @Override
   public List<Table> getTableObjectsByName(String dbname, List<String> tableNames)
       throws MetaException, UnknownDBException {
@@ -319,7 +319,7 @@ public class AuthorizingObjectStoreV2 extends ObjectStore {
 
   /**
    * load Hive auth provider
-   * 
+   *
    * @return
    * @throws MetaException
    */
