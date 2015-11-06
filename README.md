@@ -1,4 +1,4 @@
-What is Sentry? [![Build Status](https://travis-ci.org/sundapeng/incubator-sentry.svg?branch=hive_plugin_v2_dp)](https://travis-ci.org/sundapeng/incubator-sentry)
+What is Sentry?
 
 Apache Sentry is a highly modular system for providing fine grained role based authorization to both data and metadata stored on an Apache Hadoop cluster.
 
