@@ -31,7 +31,7 @@ import com.google.common.base.Joiner;
 public class HiveAuthzBindingSessionHookV2
     implements org.apache.hive.service.cli.session.HiveSessionHook {
   public static final String SCRATCH_DIR_PERMISSIONS = "700";
-  public static final String SEMANTIC_HOOK = HiveAuthzBindingHook.class.getName();
+  public static final String SEMANTIC_HOOK = HiveAuthzBindingHookV2.class.getName();
   public static final String ACCESS_RESTRICT_LIST = Joiner.on(",").join(
     ConfVars.SEMANTIC_ANALYZER_HOOK.varname,
     ConfVars.PREEXECHOOKS.varname,

@@ -26,25 +26,25 @@ import org.apache.hadoop.hive.ql.exec.DDLTask;
 import org.apache.hadoop.hive.ql.exec.SentryFilterDDLTask;
 import org.apache.hadoop.hive.ql.exec.Task;
 import org.apache.hadoop.hive.ql.parse.ASTNode;
-import org.apache.hadoop.hive.ql.parse.AbstractSemanticAnalyzerHook;
 import org.apache.hadoop.hive.ql.parse.HiveSemanticAnalyzerHookContext;
 import org.apache.hadoop.hive.ql.parse.SemanticException;
 import org.apache.hadoop.hive.ql.plan.DDLWork;
 import org.apache.hadoop.hive.ql.plan.HiveOperation;
 import org.apache.hadoop.hive.ql.session.SessionState;
+import org.apache.sentry.binding.hive.HiveAuthzBindingHook;
 import org.apache.sentry.binding.hive.authz.HiveAuthzBinding;
 import org.apache.sentry.binding.hive.conf.HiveAuthzConf;
 import org.apache.sentry.core.common.Subject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class HiveAuthzBindingHook extends AbstractSemanticAnalyzerHook {
+public class HiveAuthzBindingHookV2 extends HiveAuthzBindingHook {
   private static final Logger LOG = LoggerFactory
-      .getLogger(HiveAuthzBindingHook.class);
+      .getLogger(HiveAuthzBindingHookV2.class);
   private final HiveAuthzBinding hiveAuthzBinding;
   private final HiveAuthzConf authzConf;
 
-  public HiveAuthzBindingHook() throws Exception {
+  public HiveAuthzBindingHookV2() throws Exception {
     SessionState session = SessionState.get();
     if(session == null) {
       throw new IllegalStateException("Session has not been started");
