@@ -4,9 +4,9 @@
  * copyright ownership. The ASF licenses this file to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance with the License. You may obtain a
  * copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software distributed under the License
  * is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
  * or implied. See the License for the specific language governing permissions and limitations under
@@ -62,20 +62,9 @@ public class SentryAuthorizerUtil {
   public static final Logger LOG = LoggerFactory.getLogger(SentryAuthorizerUtil.class);
   public static String UNKONWN_GRANTOR = "--";
 
-/*  *//**
-   * Convert string to URI
-   * 
-   * @param uri
-   * @throws SemanticException
-   * @throws URISyntaxException
-   *//*
-  public static AccessURI parseURI(String uri) throws URISyntaxException {
-    return parseURI(uri, false);
-  }*/
-
   /**
    * Convert string to URI
-   * 
+   *
    * @param uri
    * @param isLocal
    * @throws SemanticException
@@ -90,7 +79,7 @@ public class SentryAuthorizerUtil {
   /**
    * Convert HivePrivilegeObject to DBModelAuthorizable list Now hive 0.13 don't support column
    * level
-   * 
+   *
    * @param server
    * @param privilege
    */
@@ -154,7 +143,7 @@ public class SentryAuthorizerUtil {
 
   /**
    * Convert HivePrivilegeObject list to List<List<DBModelAuthorizable>>
-   * 
+   *
    * @param server
    * @param privilges
    */
@@ -171,7 +160,7 @@ public class SentryAuthorizerUtil {
 
   /**
    * Convert HiveOperationType to HiveOperation
-   * 
+   *
    * @param type
    */
   public static HiveOperation convert2HiveOperation(String typeName) {
@@ -184,7 +173,7 @@ public class SentryAuthorizerUtil {
 
   /**
    * Convert HivePrivilege to Sentry Action
-   * 
+   *
    * @param hivePrivilege
    */
   public static String convert2SentryAction(HivePrivilege hivePrivilege) {
@@ -197,7 +186,7 @@ public class SentryAuthorizerUtil {
 
   /**
    * Convert Sentry Action to HivePrivilege
-   * 
+   *
    * @param hivePrivilege
    */
   public static HivePrivilege convert2HivePrivilege(String action) {
@@ -206,7 +195,7 @@ public class SentryAuthorizerUtil {
 
   /**
    * Convert TSentryRole Set to String List
-   * 
+   *
    * @param roleSet
    */
   public static List<String> convert2RoleList(Set<TSentryRole> roleSet) {
@@ -221,7 +210,7 @@ public class SentryAuthorizerUtil {
 
   /**
    * Convert TSentryPrivilege to HivePrivilegeInfo
-   * 
+   *
    * @param tPrivilege
    * @param principal
    */
@@ -239,7 +228,7 @@ public class SentryAuthorizerUtil {
 
   /**
    * Convert TSentryPrivilege to HivePrivilegeObject
-   * 
+   *
    * @param tSentryPrivilege
    */
   public static HivePrivilegeObject convert2HivePrivilegeObject(TSentryPrivilege tSentryPrivilege) {
@@ -291,7 +280,7 @@ public class SentryAuthorizerUtil {
 
   /**
    * Convert TSentryRole to HiveRoleGrant
-   * 
+   *
    * @param role
    */
   public static HiveRoleGrant convert2HiveRoleGrant(TSentryRole role) {
@@ -307,7 +296,7 @@ public class SentryAuthorizerUtil {
 
   /**
    * Execute on failure hooks for e2e tests
-   * 
+   *
    * @param context
    * @param conf
    * @param hiveOp
@@ -327,9 +316,9 @@ public class SentryAuthorizerUtil {
 
   /**
    * Returns a set of hooks specified in a configuration variable.
-   * 
+   *
    * See getHooks(HiveAuthzConf.AuthzConfVars hookConfVar, Class<T> clazz)
-   * 
+   *
    * @param hookConfVar
    * @return
    * @throws Exception
@@ -341,7 +330,7 @@ public class SentryAuthorizerUtil {
   /**
    * Returns the hooks specified in a configuration variable. The hooks are returned in a list in
    * the order they were specified in the configuration variable.
-   * 
+   *
    * @param hookConfVar The configuration variable specifying a comma separated list of the hook
    *        class names.
    * @param clazz The super type of the hooks.
