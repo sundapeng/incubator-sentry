@@ -201,12 +201,6 @@ public class SimpleSemanticAnalyzer {
 
   private void parse(HiveOperation hiveOp, String cmd) throws HiveAuthzPluginException {
     switch (hiveOp) {
-      case DROPDATABASE:
-      case DESCDATABASE:
-      case LOCKDB:
-      case UNLOCKDB:
-        parseDbMeta(cmd, OP_REGEX_MAP.get(hiveOp));
-        break;
       case DESCTABLE:
       case CREATETABLE:
       case DROPTABLE:
@@ -300,17 +294,6 @@ public class SimpleSemanticAnalyzer {
     } else {
       currentDb = SessionState.get().getCurrentDatabase();
       currentTb = tableName;
-    }
-  }
-
-  private void parseDbMeta(String cmd, String regex) throws HiveAuthzPluginException {
-    Pattern pattern = Pattern.compile(regex, Pattern.CASE_INSENSITIVE);
-    Matcher matcher = pattern.matcher(cmd);
-    if (matcher.find()) {
-      currentDb = matcher.group(matcher.groupCount());
-    } else {
-      throw new HiveAuthzPluginException("this command " + cmd
-          + " is not match database meta grammar");
     }
   }
 

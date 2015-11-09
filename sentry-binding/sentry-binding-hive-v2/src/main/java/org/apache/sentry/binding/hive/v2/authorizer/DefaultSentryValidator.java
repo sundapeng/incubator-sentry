@@ -163,13 +163,18 @@ public class DefaultSentryValidator extends SentryHiveAuthorizationValidator {
       stmtAuthPrivileges = HiveAuthzPrivilegesMap.getHiveAuthzPrivileges(hiveOp);
     }
 
+    if (stmtAuthPrivileges == null) {
+      // We don't handle authorizing this statement
+      return;
+    }
+    if (HiveOperation.DROPDATABASE.equals(hiveOp)
+        && inputHObjs.isEmpty() && outputHObjs.isEmpty() ) {
+      return;
+    }
+
     HiveAuthzBinding hiveAuthzBinding = null;
     try {
       hiveAuthzBinding = getAuthzBinding();
-      if (stmtAuthPrivileges == null) {
-        // We don't handle authorizing this statement
-        return;
-      }
 
       List<List<DBModelAuthorizable>> inputHierarchyList =
           SentryAuthorizerUtil.convert2SentryPrivilegeList(hiveAuthzBinding.getAuthServer(),
@@ -256,22 +261,6 @@ public class DefaultSentryValidator extends SentryHiveAuthorizationValidator {
         inputHierarchyList.add(serverHierarchy);
         break;
       case DATABASE:
-        // workaround for metadata queries.
-        if (EX_DB_ALL.contains(hiveOp)) {
-          SimpleSemanticAnalyzer analyzer = new SimpleSemanticAnalyzer(hiveOp, command);
-          currDatabase = analyzer.getCurrentDb();
-
-          List<DBModelAuthorizable> externalAuthorizableHierarchy =
-              new ArrayList<DBModelAuthorizable>();
-          externalAuthorizableHierarchy.add(hiveAuthzBinding.getAuthServer());
-          externalAuthorizableHierarchy.add(new Database(currDatabase));
-
-          if (EX_DB_INPUT.contains(hiveOp)) {
-            inputHierarchyList.add(externalAuthorizableHierarchy);
-          } else {
-            outputHierarchyList.add(externalAuthorizableHierarchy);
-          }
-        }
         break;
       case TABLE:
       case COLUMN:
