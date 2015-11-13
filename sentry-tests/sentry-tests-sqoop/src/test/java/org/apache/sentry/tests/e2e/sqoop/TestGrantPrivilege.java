@@ -20,6 +20,7 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
+import java.util.Collections;
 import java.util.List;
 
 import org.apache.sentry.core.model.sqoop.SqoopActionConstant;
@@ -194,6 +195,7 @@ public class TestGrantPrivilege extends AbstractSqoopSentryTestBase {
     for (MPrivilege privilege : client.getPrivilegesByPrincipal(role4Princ, allConnector)) {
       actions.add(privilege.getAction().toLowerCase());
     }
+    Collections.sort(actions);
     assertEquals(Lists.newArrayList(SqoopActionConstant.READ, SqoopActionConstant.WRITE), actions);
 
     /**
