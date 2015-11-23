@@ -79,9 +79,9 @@ public class HiveAuthzBindingHook extends AbstractSemanticAnalyzerHook {
       .getLogger(HiveAuthzBindingHook.class);
   private final HiveAuthzBinding hiveAuthzBinding;
   private final HiveAuthzConf authzConf;
-  private Database currDB = Database.ALL;
+  protected Database currDB = Database.ALL;
   private Table currTab;
-  private AccessURI udfURI;
+  protected AccessURI udfURI;
   private AccessURI partitionURI;
   private Table currOutTab = null;
   private Database currOutDB = null;
@@ -396,7 +396,7 @@ public class HiveAuthzBindingHook extends AbstractSemanticAnalyzerHook {
     }
   }
 
-  private void executeOnFailureHooks(HiveSemanticAnalyzerHookContext context,
+  protected void executeOnFailureHooks(HiveSemanticAnalyzerHookContext context,
       HiveOperation hiveOp, AuthorizationException e) {
     SentryOnFailureHookContext hookCtx = new SentryOnFailureHookContextImpl(
         context.getCommand(), context.getInputs(), context.getOutputs(),
@@ -435,7 +435,7 @@ public class HiveAuthzBindingHook extends AbstractSemanticAnalyzerHook {
    * @param stmtOperation
    * @throws AuthorizationException
    */
-  private void authorizeWithHiveBindings(HiveSemanticAnalyzerHookContext context,
+  protected void authorizeWithHiveBindings(HiveSemanticAnalyzerHookContext context,
       HiveAuthzPrivileges stmtAuthObject, HiveOperation stmtOperation) throws  AuthorizationException {
     Set<ReadEntity> inputs = context.getInputs();
     Set<WriteEntity> outputs = context.getOutputs();
