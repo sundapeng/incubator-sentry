@@ -122,8 +122,8 @@ public class DefaultSentryValidator extends SentryHiveAuthorizationValidator {
       HiveOperation.ALTERPARTITION_PROTECTMODE, HiveOperation.ALTERPARTITION_SERDEPROPERTIES,
       HiveOperation.ALTERPARTITION_SERIALIZER, HiveOperation.ALTERPARTITION_MERGEFILES,
       HiveOperation.ALTERPARTITION_LOCATION, HiveOperation.ALTERTBLPART_SKEWED_LOCATION,
-      HiveOperation.MSCK, HiveOperation.ALTERINDEX_REBUILD, HiveOperation.LOCKTABLE,
-      HiveOperation.UNLOCKTABLE, HiveOperation.SHOWCOLUMNS, HiveOperation.SHOW_TABLESTATUS, HiveOperation.LOAD);
+      HiveOperation.MSCK, HiveOperation.ALTERINDEX_REBUILD, HiveOperation.SHOWCOLUMNS,
+      HiveOperation.SHOW_TABLESTATUS, HiveOperation.LOAD);
   // input operations need to extend at Table scope
   private static final Set<HiveOperation> EX_TB_INPUT = Sets.newHashSet(HiveOperation.DROPTABLE,
       HiveOperation.DROPVIEW, HiveOperation.SHOW_TBLPROPERTIES, HiveOperation.SHOWINDEXES,
@@ -287,7 +287,7 @@ public class DefaultSentryValidator extends SentryHiveAuthorizationValidator {
         }
         break;
       case FUNCTION:
-        if (hiveOp.equals(HiveOperation.CREATEFUNCTION)) {
+        /*if (hiveOp.equals(HiveOperation.CREATEFUNCTION)) {
           SimpleSemanticAnalyzer analyzer = new SimpleSemanticAnalyzer(hiveOp, command);
           currDatabase = analyzer.getCurrentDb();
           String udfClassName = analyzer.getCurrentTb();
@@ -310,7 +310,7 @@ public class DefaultSentryValidator extends SentryHiveAuthorizationValidator {
           } catch (Exception e) {
             throw new HiveAuthzPluginException("Error retrieving udf class", e);
           }
-        }
+        }*/
         break;
       case CONNECT:
         /*
