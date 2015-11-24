@@ -121,6 +121,7 @@ public class HiveAuthzBindingHookV2 extends HiveAuthzBindingHook {
         // create/drop function is allowed with any database
         currDB = Database.ALL;
         break;
+        
     }
     return ast;
   }
