@@ -19,6 +19,7 @@ package org.apache.sentry.binding.metastore;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import org.apache.hadoop.conf.Configuration;
@@ -224,14 +225,19 @@ public class SentryMetastorePostEventListener extends MetaStoreEventListener {
   }
 
   @Override
-  public void onAddPartition(AddPartitionEvent partitionEvent)
-      throws MetaException {
-    for (Partition part : partitionEvent.getPartitions()) {
-      if ((part.getSd() != null) && (part.getSd().getLocation() != null)) {
-        String authzObj = part.getDbName() + "." + part.getTableName();
-        String path = part.getSd().getLocation();
-        for (SentryMetastoreListenerPlugin plugin : sentryPlugins) {
-          plugin.addPath(authzObj, path);
+  public void onAddPartition(AddPartitionEvent partitionEvent) throws MetaException {
+    if (partitionEvent != null && partitionEvent.getPartitionIterator() != null) {
+      while (partitionEvent.getPartitionIterator().hasNext()) {
+        Iterator<Partition> it = partitionEvent.getPartitionIterator();
+        while (it.hasNext()) {
+          Partition part = it.next();
+          if ((part.getSd() != null) && (part.getSd().getLocation() != null)) {
+            String authzObj = part.getDbName() + "." + part.getTableName();
+            String path = part.getSd().getLocation();
+            for (SentryMetastoreListenerPlugin plugin : sentryPlugins) {
+              plugin.addPath(authzObj, path);
+            }
+          }
         }
       }
     }
@@ -239,13 +245,20 @@ public class SentryMetastorePostEventListener extends MetaStoreEventListener {
   }
 
   @Override
-  public void onDropPartition(DropPartitionEvent partitionEvent)
-      throws MetaException {
-    String authzObj = partitionEvent.getTable().getDbName() + "."
-        + partitionEvent.getTable().getTableName();
-    String path = partitionEvent.getPartition().getSd().getLocation();
-    for (SentryMetastoreListenerPlugin plugin : sentryPlugins) {
-      plugin.removePath(authzObj, path);
+  public void onDropPartition(DropPartitionEvent partitionEvent) throws MetaException {
+    if (partitionEvent != null && partitionEvent.getPartitionIterator() != null) {
+      String authzObj =
+          partitionEvent.getTable().getDbName() + "." + partitionEvent.getTable().getTableName();
+      Iterator<Partition> it = partitionEvent.getPartitionIterator();
+      while (it.hasNext()) {
+        Partition part = it.next();
+        if ((part.getSd() != null) && (part.getSd().getLocation() != null)) {
+          String path = part.getSd().getLocation();
+          for (SentryMetastoreListenerPlugin plugin : sentryPlugins) {
+            plugin.removePath(authzObj, path);
+          }
+        }
+      }
     }
     super.onDropPartition(partitionEvent);
   }
