@@ -76,12 +76,12 @@ limitations under the License.
       <artifactId>sentry-provider-db</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.apache.hive</groupId>
+      <groupId>me.sundp.hive</groupId>
       <artifactId>hive-exec</artifactId>
       <version>${hive.version}</version>
     </dependency>
     <dependency>
-      <groupId>org.apache.hive</groupId>
+      <groupId>me.sundp.hive</groupId>
       <artifactId>hive-shims</artifactId>
       <version>${hive.version}</version>
     </dependency>
@@ -103,7 +103,7 @@ limitations under the License.
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>org.apache.hive</groupId>
+      <groupId>me.sundp.hive</groupId>
       <artifactId>hive-metastore</artifactId>
       <version>${hive.version}</version>
     </dependency>
