@@ -16,20 +16,28 @@
  */
 package org.apache.sentry.binding.hive;
 
+import java.util.List;
+
 import org.apache.hadoop.hive.conf.HiveConf;
 import org.apache.hadoop.hive.conf.HiveConf.ConfVars;
 import org.apache.hadoop.hive.ql.security.HiveAuthenticationProvider;
+import org.apache.hadoop.hive.ql.security.authorization.plugin.HiveAccessControlException;
 import org.apache.hadoop.hive.ql.security.authorization.plugin.HiveAccessController;
 import org.apache.hadoop.hive.ql.security.authorization.plugin.HiveAuthorizationValidator;
 import org.apache.hadoop.hive.ql.security.authorization.plugin.HiveAuthorizer;
 import org.apache.hadoop.hive.ql.security.authorization.plugin.HiveAuthorizerFactory;
 import org.apache.hadoop.hive.ql.security.authorization.plugin.HiveAuthorizerImpl;
+import org.apache.hadoop.hive.ql.security.authorization.plugin.HiveAuthzContext;
 import org.apache.hadoop.hive.ql.security.authorization.plugin.HiveAuthzPluginException;
 import org.apache.hadoop.hive.ql.security.authorization.plugin.HiveAuthzSessionContext;
 import org.apache.hadoop.hive.ql.security.authorization.plugin.HiveMetastoreClientFactory;
+import org.apache.hadoop.hive.ql.security.authorization.plugin.HiveOperationType;
+import org.apache.hadoop.hive.ql.security.authorization.plugin.HivePrivilegeObject;
+import org.apache.hadoop.hive.ql.security.authorization.plugin.HivePrivilegeObject.HivePrivilegeObjectType;
 import org.apache.hadoop.mapreduce.JobContext;
 import org.apache.hive.service.cli.HiveSQLException;
 import org.apache.hive.service.cli.session.HiveSessionHookContext;
+import org.apache.sentry.binding.hive.authz.HiveAuthzBinding;
 import org.apache.sentry.binding.hive.conf.HiveAuthzConf;
 
 import com.google.common.base.Joiner;
@@ -68,13 +76,19 @@ public class HiveAuthzBindingSessionHook
   public static class SentryHiveAuthorizerFactory implements
       HiveAuthorizerFactory {
 
+    private HiveAuthenticationProvider authenticator;
+
     @Override
-    public HiveAuthorizer createHiveAuthorizer(
-        HiveMetastoreClientFactory metastoreClientFactory, HiveConf conf,
-        HiveAuthenticationProvider hiveAuthenticator,
-        HiveAuthzSessionContext ctx) throws HiveAuthzPluginException {
-      return new SentryHiveAuthorizerImpl(null, null);    }
+    public HiveAuthorizer createHiveAuthorizer(HiveMetastoreClientFactory metastoreClientFactory,
+        HiveConf conf, HiveAuthenticationProvider hiveAuthenticator, HiveAuthzSessionContext ctx)
+        throws HiveAuthzPluginException {
+      HiveAuthorizationValidator validator =
+          new DefaultSentryValidator(conf, HiveAuthzBindingHook.loadAuthzConf(conf),
+              hiveAuthenticator);
+      return new SentryHiveAuthorizerImpl(null, validator);
+    }
   }
+
 
   public static class SentryHiveAuthorizerImpl extends HiveAuthorizerImpl {
 

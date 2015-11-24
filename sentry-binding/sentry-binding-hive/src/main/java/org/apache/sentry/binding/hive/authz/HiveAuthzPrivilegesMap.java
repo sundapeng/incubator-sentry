@@ -301,6 +301,8 @@ public class HiveAuthzPrivilegesMap {
     hiveAuthzStmtPrivMap.put(HiveOperation.DESCDATABASE, dbMetaDataPrivilege);
     hiveAuthzStmtPrivMap.put(HiveOperation.DESCTABLE, tableMetaDataPrivilege);
     hiveAuthzStmtPrivMap.put(HiveOperation.TRUNCATETABLE, truncateTablePrivilege);
+    hiveAuthzStmtPrivMap.put(HiveOperation.SHOWDATABASES, anyPrivilege);
+    hiveAuthzStmtPrivMap.put(HiveOperation.SHOWTABLES, tableMetaDataPrivilege);
   }
 
   public static HiveAuthzPrivileges getHiveAuthzPrivileges(HiveOperation hiveStmtOp) {
