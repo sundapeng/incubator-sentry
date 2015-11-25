@@ -42,7 +42,7 @@
         <exclude>org.slf4j:*</exclude>
         <exclude>org.datanucleus:*</exclude>
         <exclude>com.jolbox:bonecp</exclude>
-        <exclude>org.apache.hive:hive-beeline</exclude>
+        <exclude>me.sundp.hive:hive-beeline</exclude>
         <exclude>org.apache.derby:derby</exclude>
       </excludes>
     </dependencySet>
@@ -67,7 +67,7 @@
       <includes>
         <include>org.datanucleus:*</include>
         <include>com.jolbox:bonecp</include>
-        <include>org.apache.hive:hive-beeline</include>
+        <include>me.sundp.hive:hive-beeline</include>
         <include>org.apache.derby:derby</include>
       </includes>
     </dependencySet>
