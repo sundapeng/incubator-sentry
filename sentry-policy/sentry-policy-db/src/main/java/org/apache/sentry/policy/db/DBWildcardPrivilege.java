@@ -73,7 +73,7 @@ public class DBWildcardPrivilege implements Privilege {
 
   @Override
   public boolean implies(Privilege p) {
-    return !isDenyPrivilege && impliesCore(p);
+    return impliesCore(p);
   }
 
   public boolean impliesCore(Privilege p) {
@@ -151,7 +151,12 @@ public class DBWildcardPrivilege implements Privilege {
 
   @Override
   public String toString() {
-    return PolicyConstants.AUTHORIZABLE_JOINER.join(parts);
+    String permission = PolicyConstants.AUTHORIZABLE_JOINER.join(parts);
+    if (isDenyPrivilege) {
+      return PolicyConstants.AUTHORIZABLE_JOINER.join(permission, new KeyValue(
+          PolicyConstants.DENY_PRIVILEGE_KEY, "true"));
+    }
+    return permission;
   }
 
   @Override
@@ -173,5 +178,10 @@ public class DBWildcardPrivilege implements Privilege {
     public Privilege createPrivilege(String privilege) {
       return new DBWildcardPrivilege(privilege);
     }
+  }
+
+  @Override
+  public boolean isDenyPrivilege() {
+    return isDenyPrivilege;
   }
 }

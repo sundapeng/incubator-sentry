@@ -18,4 +18,6 @@ package org.apache.sentry.policy.common;
 
 public interface Privilege {
   boolean implies(Privilege p);
+
+  boolean isDenyPrivilege();
 }
