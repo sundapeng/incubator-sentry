@@ -199,6 +199,10 @@ public class TestDBWildcardPrivilege {
       public boolean implies(Privilege p) {
         return false;
       }
+      @Override
+      public boolean isDenyPrivilege() {
+        return false;
+      }
     };
     assertFalse(ROLE_SERVER_SERVER1_DB_ALL.implies(null));
     assertFalse(ROLE_SERVER_SERVER1_DB_ALL.implies(p));

@@ -155,6 +155,10 @@ public class TestSearchWildcardPrivilege {
       public boolean implies(Privilege p) {
         return false;
       }
+      @Override
+      public boolean isDenyPrivilege() {
+        return false;
+      }
     };
     Privilege collection1 = create(new KeyValue("collection", "coll1"));
     assertFalse(collection1.implies(null));

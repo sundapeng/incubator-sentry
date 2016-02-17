@@ -155,6 +155,10 @@ public class TestIndexerWildcardPrivilege {
       public boolean implies(Privilege p) {
         return false;
       }
+      @Override
+      public boolean isDenyPrivilege() {
+        return false;
+      }
     };
     Privilege indexer1 = create(new KeyValue("indexer", "index1"));
     assertFalse(indexer1.implies(null));
