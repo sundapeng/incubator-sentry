@@ -42,7 +42,7 @@ public class DBWildcardPrivilege implements Privilege {
 
   private final ImmutableList<KeyValue> parts;
 
-  private final boolean isDenyPrivilege;
+  private final Boolean isDenyPrivilege;
 
   public DBWildcardPrivilege(String wildcardString) {
     wildcardString = Strings.nullToEmpty(wildcardString).trim();
@@ -57,7 +57,7 @@ public class DBWildcardPrivilege implements Privilege {
         throw new IllegalArgumentException("Privilege '" + wildcardString + "' has an empty section");
       }
       KeyValue kv = new KeyValue(authorizable);
-      if (kv.getKey() == PolicyConstants.DENY_PRIVILEGE_KEY) {
+      if (PolicyConstants.DENY_PRIVILEGE_KEY.equals(kv.getKey())) {
         isDenyPrivilege = isDenyPrivilege || Boolean.parseBoolean(kv.getValue());
       } else {
         parts.add(kv);

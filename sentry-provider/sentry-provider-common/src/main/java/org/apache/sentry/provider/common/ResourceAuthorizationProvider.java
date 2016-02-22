@@ -107,8 +107,7 @@ public abstract class ResourceAuthorizationProvider implements AuthorizationProv
     for (String requestPrivilegeString : requestPrivileges) {
       Privilege requestPrivilege = privilegeFactory.createPrivilege(requestPrivilegeString);
       for (Privilege permission : privileges) {
-        if (permission.isDenyPrivilege()
-            && (permission.implies(requestPrivilege) || requestPrivilege.implies(permission))) {
+        if (permission.isDenyPrivilege() && (permission.implies(requestPrivilege))) {
           lastFailedPrivileges.get().add(
               "Request Privilege :" + requestPrivilegeString + "is denied by " + permission);
           return false;
