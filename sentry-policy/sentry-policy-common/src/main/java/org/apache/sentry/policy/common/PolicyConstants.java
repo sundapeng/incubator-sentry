@@ -33,6 +33,9 @@ public class PolicyConstants {
   public static final Joiner KV_JOINER = Joiner.on(KV_SEPARATOR);
 
   // TODO change to privilege
+  public static final String DENY_PRIVILEGE_KEY = "deny";
+  public static final String DENY_PRIVILEGE_PREFIX = (DENY_PRIVILEGE_KEY + KV_SEPARATOR)
+      .toLowerCase();
   public static final String PRIVILEGE_NAME = "action";
   public static final String PRIVILEGE_PREFIX = (PRIVILEGE_NAME + KV_SEPARATOR).toLowerCase();
 }

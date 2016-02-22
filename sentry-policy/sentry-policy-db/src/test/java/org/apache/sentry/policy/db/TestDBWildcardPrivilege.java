@@ -23,6 +23,7 @@ import static junit.framework.Assert.assertTrue;
 import static org.apache.sentry.policy.common.PolicyConstants.AUTHORIZABLE_JOINER;
 import static org.apache.sentry.policy.common.PolicyConstants.KV_JOINER;
 import static org.apache.sentry.policy.common.PolicyConstants.KV_SEPARATOR;
+import static org.apache.sentry.policy.common.PolicyConstants.DENY_PRIVILEGE_KEY;
 
 import org.apache.sentry.core.model.db.AccessConstants;
 import org.apache.sentry.policy.common.Privilege;
@@ -199,6 +200,10 @@ public class TestDBWildcardPrivilege {
       public boolean implies(Privilege p) {
         return false;
       }
+      @Override
+      public boolean isDenyPrivilege() {
+        return false;
+      }
     };
     assertFalse(ROLE_SERVER_SERVER1_DB_ALL.implies(null));
     assertFalse(ROLE_SERVER_SERVER1_DB_ALL.implies(p));
@@ -296,6 +301,68 @@ public class TestDBWildcardPrivilege {
         new KeyValue("db", dbName), new KeyValue("action", "INDEX"));
     DBWildcardPrivilege dbLock = create(new KeyValue("server", "server1"),
         new KeyValue("db", dbName), new KeyValue("action", "LOCK"));
+
+    assertTrue(dbAll.implies(dbSelect));
+    assertTrue(dbAll.implies(dbInsert));
+    assertTrue(dbAll.implies(dbAlter));
+    assertTrue(dbAll.implies(dbCreate));
+    assertTrue(dbAll.implies(dbDrop));
+    assertTrue(dbAll.implies(dbIndex));
+    assertTrue(dbAll.implies(dbLock));
+
+    dbAll = create(new KeyValue("server", "server1"),
+        new KeyValue("db", dbName), new KeyValue("action", "*"));
+
+    assertTrue(dbAll.implies(dbSelect));
+    assertTrue(dbAll.implies(dbInsert));
+    assertTrue(dbAll.implies(dbAlter));
+    assertTrue(dbAll.implies(dbCreate));
+    assertTrue(dbAll.implies(dbDrop));
+    assertTrue(dbAll.implies(dbIndex));
+    assertTrue(dbAll.implies(dbLock));
+
+    dbAll = create(new KeyValue("server", "server1"),
+        new KeyValue("db", dbName));
+
+    assertTrue(dbAll.implies(dbSelect));
+    assertTrue(dbAll.implies(dbInsert));
+    assertTrue(dbAll.implies(dbAlter));
+    assertTrue(dbAll.implies(dbCreate));
+    assertTrue(dbAll.implies(dbDrop));
+    assertTrue(dbAll.implies(dbIndex));
+    assertTrue(dbAll.implies(dbLock));
+
+  }
+  @Test
+  public void testDenyPrivilegeToString() throws Exception {
+    String dbName = "db1";
+    DBWildcardPrivilege dbAll =
+        create(new KeyValue("server", "server1"), new KeyValue("db", dbName), new KeyValue(
+            "action", "ALL"), new KeyValue(DENY_PRIVILEGE_KEY, "true"));
+    assertEquals("server=server1->db=db1->action=ALL->deny=true", dbAll.toString());
+    assertEquals(dbAll.isDenyPrivilege(), true);
+
+    DBWildcardPrivilege dbSelect =
+        create(new KeyValue("server", "server1"), new KeyValue("db", dbName), new KeyValue(
+            "action", "SELECT"), new KeyValue(DENY_PRIVILEGE_KEY, "true"));
+    DBWildcardPrivilege dbInsert =
+        create(new KeyValue("server", "server1"), new KeyValue("db", dbName), new KeyValue(
+            "action", "INSERT"), new KeyValue(DENY_PRIVILEGE_KEY, "true"));
+    DBWildcardPrivilege dbAlter =
+        create(new KeyValue("server", "server1"), new KeyValue("db", dbName), new KeyValue(
+            "action", "ALTER"), new KeyValue(DENY_PRIVILEGE_KEY, "true"));
+    DBWildcardPrivilege dbCreate =
+        create(new KeyValue("server", "server1"), new KeyValue("db", dbName), new KeyValue(
+            "action", "CREATE"), new KeyValue(DENY_PRIVILEGE_KEY, "true"));
+    DBWildcardPrivilege dbDrop =
+        create(new KeyValue("server", "server1"), new KeyValue("db", dbName), new KeyValue(
+            "action", "DROP"), new KeyValue(DENY_PRIVILEGE_KEY, "true"));
+    DBWildcardPrivilege dbIndex =
+        create(new KeyValue("server", "server1"), new KeyValue("db", dbName), new KeyValue(
+            "action", "INDEX"), new KeyValue(DENY_PRIVILEGE_KEY, "true"));
+    DBWildcardPrivilege dbLock =
+        create(new KeyValue("server", "server1"), new KeyValue("db", dbName), new KeyValue(
+            "action", "LOCK"), new KeyValue(DENY_PRIVILEGE_KEY, "true"));
 
     assertTrue(dbAll.implies(dbSelect));
     assertTrue(dbAll.implies(dbInsert));

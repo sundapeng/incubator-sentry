@@ -42,8 +42,11 @@ public class DBWildcardPrivilege implements Privilege {
 
   private final ImmutableList<KeyValue> parts;
 
+  private final Boolean isDenyPrivilege;
+
   public DBWildcardPrivilege(String wildcardString) {
     wildcardString = Strings.nullToEmpty(wildcardString).trim();
+    boolean isDenyPrivilege = false;
     if (wildcardString.isEmpty()) {
       throw new IllegalArgumentException("Wildcard string cannot be null or empty.");
     }
@@ -53,17 +56,27 @@ public class DBWildcardPrivilege implements Privilege {
       if (authorizable.isEmpty()) {
         throw new IllegalArgumentException("Privilege '" + wildcardString + "' has an empty section");
       }
-      parts.add(new KeyValue(authorizable));
+      KeyValue kv = new KeyValue(authorizable);
+      if (PolicyConstants.DENY_PRIVILEGE_KEY.equals(kv.getKey())) {
+        isDenyPrivilege = isDenyPrivilege || Boolean.parseBoolean(kv.getValue());
+      } else {
+        parts.add(kv);
+      }
     }
     if (parts.isEmpty()) {
       throw new AssertionError("Should never occur: " + wildcardString);
     }
     this.parts = ImmutableList.copyOf(parts);
+    this.isDenyPrivilege = isDenyPrivilege;
   }
 
 
   @Override
   public boolean implies(Privilege p) {
+    return impliesCore(p);
+  }
+
+  public boolean impliesCore(Privilege p) {
     // By default only supports comparisons with other DBWildcardPermissions
     if (!(p instanceof DBWildcardPrivilege)) {
       return false;
@@ -138,7 +151,12 @@ public class DBWildcardPrivilege implements Privilege {
 
   @Override
   public String toString() {
-    return PolicyConstants.AUTHORIZABLE_JOINER.join(parts);
+    String permission = PolicyConstants.AUTHORIZABLE_JOINER.join(parts);
+    if (isDenyPrivilege) {
+      return PolicyConstants.AUTHORIZABLE_JOINER.join(permission, new KeyValue(
+          PolicyConstants.DENY_PRIVILEGE_KEY, "true"));
+    }
+    return permission;
   }
 
   @Override
@@ -160,5 +178,10 @@ public class DBWildcardPrivilege implements Privilege {
     public Privilege createPrivilege(String privilege) {
       return new DBWildcardPrivilege(privilege);
     }
+  }
+
+  @Override
+  public boolean isDenyPrivilege() {
+    return isDenyPrivilege;
   }
 }

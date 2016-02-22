@@ -103,24 +103,29 @@ public abstract class ResourceAuthorizationProvider implements AuthorizationProv
     Iterable<Privilege> privileges = getPrivileges(groups, roleSet, authorizables.toArray(new Authorizable[0]));
     lastFailedPrivileges.get().clear();
 
-    for (String requestPrivilege : requestPrivileges) {
+    boolean result = false;
+    for (String requestPrivilegeString : requestPrivileges) {
+      Privilege requestPrivilege = privilegeFactory.createPrivilege(requestPrivilegeString);
       for (Privilege permission : privileges) {
+        if (permission.isDenyPrivilege() && (permission.implies(requestPrivilege))) {
+          lastFailedPrivileges.get().add(
+              "Request Privilege :" + requestPrivilegeString + "is denied by " + permission);
+          return false;
+        }
         /*
          * Does the permission granted in the policy file imply the requested action?
          */
-        boolean result = permission.implies(privilegeFactory.createPrivilege(requestPrivilege));
+        result = result || permission.implies(requestPrivilege);
         if (LOGGER.isDebugEnabled()) {
           LOGGER.debug("ProviderPrivilege {}, RequestPrivilege {}, RoleSet, {}, Result {}",
-              new Object[]{ permission, requestPrivilege, roleSet, result});
-        }
-        if (result) {
-          return true;
+              new Object[]{ permission, requestPrivilegeString, roleSet, result});
         }
       }
     }
-
-    lastFailedPrivileges.get().addAll(requestPrivileges);
-    return false;
+    if (!result) {
+      lastFailedPrivileges.get().addAll(requestPrivileges);
+    }
+    return result;
   }
 
   private Iterable<Privilege> getPrivileges(Set<String> groups, ActiveRoleSet roleSet, Authorizable[] authorizables) {
