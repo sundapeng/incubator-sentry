@@ -33,6 +33,9 @@ limitations under the License.
   -->
     <HADOOP_CONF_DIR>${env.HADOOP_CONF_DIR}</HADOOP_CONF_DIR>
     <HIVE_CONF_DIR>${env.HIVE_CONF_DIR}</HIVE_CONF_DIR>
+    <datanucleus-api-jdo.version>3.2.6</datanucleus-api-jdo.version>
+    <datanucleus-core.version>3.2.12</datanucleus-core.version>
+    <datanucleus-rdbms.version>3.2.12</datanucleus-rdbms.version>
   </properties>
   <dependencies>
     <dependency>
@@ -61,6 +64,16 @@ limitations under the License.
     <dependency>
       <groupId>org.apache.hive</groupId>
       <artifactId>hive-metastore</artifactId>
+      <exclusions>
+        <exclusion>
+          <groupId>org.datanucleus</groupId>
+          <artifactId>datanucleus-core</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.datanucleus</groupId>
+          <artifactId>datanucleus-rdbms</artifactId>
+        </exclusion>
+      </exclusions>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -76,6 +89,16 @@ limitations under the License.
     <dependency>
       <groupId>org.apache.hive</groupId>
       <artifactId>hive-exec</artifactId>
+      <exclusions>
+        <exclusion>
+          <groupId>org.datanucleus</groupId>
+          <artifactId>datanucleus-core</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.datanucleus</groupId>
+          <artifactId>datanucleus-rdbms</artifactId>
+        </exclusion>
+      </exclusions>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -268,6 +291,21 @@ limitations under the License.
         <version>${joda-time.version}</version>
         <scope>test</scope>
       </dependency>
+      <dependency>
+        <groupId>org.datanucleus</groupId>
+        <artifactId>datanucleus-core</artifactId>
+        <version>${datanucleus-core.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.datanucleus</groupId>
+        <artifactId>datanucleus-api-jdo</artifactId>
+        <version>${datanucleus-api-jdo.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.datanucleus</groupId>
+        <artifactId>datanucleus-rdbms</artifactId>
+      <version>${datanucleus-rdbms.version}</version>
+    </dependency>
   </dependencies>
   <build>
     <plugins>

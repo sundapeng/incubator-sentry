@@ -167,7 +167,6 @@ public class SentryStore {
         ServerConfig.SENTRY_VERIFY_SCHEM_VERSION_DEFAULT).equalsIgnoreCase(
             "true");
     if (!checkSchemaVersion) {
-      prop.setProperty("datanucleus.schema.autoCreateAll", "true");
       prop.setProperty("datanucleus.autoCreateSchema", "true");
       prop.setProperty("datanucleus.fixedDatastore", "false");
     }
