@@ -18,6 +18,9 @@
 language: java
 jdk:
   - oraclejdk7
+script:
+  - mvn clean test
+  - mvn clean test -P hive-authz2,-hive-authz1
 #  - openjdk7
 #  - openjdk6
 #
